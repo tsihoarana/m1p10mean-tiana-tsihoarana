@@ -1,0 +1,4 @@
+{
+  "jwtPrivateKey": "garage_jwtPrivateKey",
+  "db": "garage_db"
+}

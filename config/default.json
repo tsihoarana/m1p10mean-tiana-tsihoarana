@@ -1,0 +1,6 @@
+{
+  "jwtPrivateKey": "unsecureKey",
+  "db": "mongodb://127.0.0.1/garage",
+  "port": "3900",
+  "requiresAuth": false
+}
