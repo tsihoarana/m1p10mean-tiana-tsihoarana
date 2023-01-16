@@ -1,16 +1,7 @@
 const Joi = require("joi");
-const boolean = require("joi/lib/types/boolean");
 const mongoose = require("mongoose");
-const { userSchema } = require("../models/user");
 
-const visiteSchema = new mongoose.Schema({
-  voiture: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
-  },
-  date_entree: Date,
-  date_sortie: Date
-});
+const { visiteSchema } = require("../models/visite");
 
 const voitureSchema = new mongoose.Schema({
   user: {
@@ -24,9 +15,9 @@ const voitureSchema = new mongoose.Schema({
     maxlength: 7,
     unique: true
   },
-  valid: {
-    type: Boolean,
-    default: false
+  etat: {
+    type: Number,
+    default: 2
   },
   visites: [ visiteSchema ]
 });
