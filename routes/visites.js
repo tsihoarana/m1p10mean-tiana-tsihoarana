@@ -7,9 +7,12 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/client", [auth, client], async (req, res) => {
-  const visite = await Visite.findOne({ etat: { $ne: 2 } });
+  const user = await User.findById(req.user._id).select("-password");
+  req.body.user = user;
 
-  res.send(visite);
+  const visites = await Visite.find({ etat: { $ne: 2 }, user: user._id });
+
+  res.send(visites);
 });
 
 module.exports = router;

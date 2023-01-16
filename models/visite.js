@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const { reparationSchema } = require("../models/reparation");
 
 const visiteSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
     voiture: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
