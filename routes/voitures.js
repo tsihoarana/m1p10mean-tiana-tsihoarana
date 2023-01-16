@@ -1,5 +1,6 @@
 const auth = require("../middleware/auth");
 const client = require("../middleware/client");
+const atelier = require("../middleware/atelier");
 const _ = require("lodash");
 const { Voiture, validate } = require("../models/voiture");
 const { User } = require("../models/user");
@@ -35,16 +36,11 @@ router.post("/client/deposer", [auth, client], async (req, res) => {
   res.send(_.pick(voiture, ["_id", "numero", "etat"]));
 });
 
-router.get("/receptionner/:numero", [auth, client], async (req, res) => {
+router.get("/atelier/demande", [auth, atelier], async (req, res) => {
 
-  let voiture = await Voiture.findOne({ etat: 0 });
-  if (!voiture) return res.status(404).send("voiture non trouver, verifier le numero demandé");
-  if (voiture.etat != 0) return res.status(400).send("Le voiture n'a pas fait de demande");
+  let voitures = await Voiture.find({ etat: 0 });
 
-  voiture.etat = 1;
-  await voiture.save();
-
-  res.send(_.pick(voiture, ["_id", "numero", "etat"]));
+  res.send(voitures);
 });
 
 module.exports = router;
