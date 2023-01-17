@@ -1,5 +1,6 @@
 const auth = require("../middleware/auth");
 const atelier = require("../middleware/atelier");
+const client = require("../middleware/client");
 const validateObjectId = require("../middleware/validateObjectId");
 const _ = require("lodash");
 const { Reparation, validate } = require("../models/reparation");
@@ -31,6 +32,15 @@ router.get("/atelier/visite/:id", [auth, atelier, validateObjectId], async (req,
     // if (visite.etat != 0) return res.status(400).send("visite non valide");
 
     res.send(visite.reparations);
+});
+
+router.get("/client/visite/:id", [auth, client, validateObjectId], async (req, res) => {
+    const visite = await Visite.findById( req.params.id );
+    if (!visite) return res.status(404).send("visite non trouver");
+    if (visite.etat == 2) return res.status(400).send("visite deja terminée et payée");
+    
+    res.send(_.map(visite.reparations, obj => 
+        _.pick(obj, ['_id', 'piece', 'duree', 'avancement']) ));
 });
 
   
