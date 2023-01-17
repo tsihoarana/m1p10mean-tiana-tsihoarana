@@ -7,12 +7,11 @@ const { Visite } = require("../models/visite");
 const express = require("express");
 const router = express.Router();
 
-router.post("/atelier/create/:id", [auth, atelier, validateObjectId], async (req, res) => {
-    req.params.visite_id = req.params.id;
+router.post("/atelier/create/visite/:id", [auth, atelier, validateObjectId], async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const visite = await Visite.findById( req.params.visite_id );
+    const visite = await Visite.findById( req.params.id );
     if (!visite) return res.status(404).send("visite non trouver");
     if (visite.etat != 0) return res.status(400).send("visite non valide");
 
@@ -24,6 +23,14 @@ router.post("/atelier/create/:id", [auth, atelier, validateObjectId], async (req
     await visite.save();
 
     res.send(reparation);
+});
+
+router.get("/atelier/visite/:id", [auth, atelier, validateObjectId], async (req, res) => {
+    const visite = await Visite.findById( req.params.id );
+    if (!visite) return res.status(404).send("visite non trouver");
+    // if (visite.etat != 0) return res.status(400).send("visite non valide");
+
+    res.send(visite.reparations);
 });
 
   
