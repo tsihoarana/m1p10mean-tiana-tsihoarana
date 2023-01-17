@@ -18,7 +18,7 @@ const reparationSchema = new mongoose.Schema({
   avancement: {
     type: Number,
     required: true,
-    min: 5,
+    min: 0,
     max: 10
   },
   prix: {
@@ -32,20 +32,19 @@ const Reparation = mongoose.model("Reparation", reparationSchema);
 
 function validateReparation(reparation) {
     const schema = {
-        duree: Joi.string()
+        duree: Joi.number()
         .min(0)
         .max(1500)
         .required(),
         piece: Joi.string()
         .min(3)
         .max(255)
-        .required()
-        .email(),
-        avancement: Joi.string()
+        .required(),
+        avancement: Joi.number()
         .min(0)
         .max(10)
         .required(),
-        prix: Joi.Number()
+        prix: Joi.number()
         .min(0)
         .required()
     };
@@ -54,3 +53,5 @@ function validateReparation(reparation) {
 }
 
 exports.reparationSchema = reparationSchema;
+exports.Reparation = Reparation;
+exports.validate = validateReparation;
