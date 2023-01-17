@@ -3,6 +3,10 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 
 const reparationSchema = new mongoose.Schema({
+  visite: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
   duree: {
     type: Number,
     required: true,
