@@ -44,4 +44,11 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
   res.send(visite);
 });
 
+router.get("/sum/:id", async (req, res) => {
+  const visite = await Visite.findById(req.params.id);
+  const sum = visite.isAllReparationFinished();
+  console.log("sum="+ sum);
+  res.send({sum});
+});
+
 module.exports = router;

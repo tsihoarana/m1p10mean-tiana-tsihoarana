@@ -32,6 +32,22 @@ const visiteSchema = new mongoose.Schema({
     }
 });
 
+visiteSchema.methods.sommeReparation = function () {
+    return this.reparations.reduce((acc, reparation) => acc + reparation.prix, 0);
+};
+
+visiteSchema.methods.isAllReparationFinished = function () {
+    this.finished = true;
+    this.reparations.every((reparation) => {
+        if (reparation.avancement != 2) {
+            this.finished = false;
+            return false;
+        }
+        return true;
+    });
+    return this.finished;
+};
+
 const Visite = mongoose.model("Visite", visiteSchema);
 
 function validateVisite(visite) {

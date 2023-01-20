@@ -80,7 +80,6 @@ router.delete("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, v
     const reparation = visite.reparations.find(x => x._id == req.params.reparation_id);
     if (!reparation) return res.status(404).send("reparation non trouver");
 
-
     const deleted = visite.reparations.pop(reparation);
 
     await visite.save();
