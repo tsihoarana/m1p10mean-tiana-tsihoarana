@@ -15,6 +15,9 @@ const voitureSchema = new mongoose.Schema({
     maxlength: 7,
     unique: true
   },
+  image: {
+    type: Buffer
+  },
   etat: {
     type: Number,
     default: 2
