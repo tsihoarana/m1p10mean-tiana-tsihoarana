@@ -5,18 +5,33 @@ const validateObjectId = require("../middleware/validateObjectId");
 const _ = require("lodash");
 const { Bondesortie, validate } = require("../models/bondesortie");
 const { Visite } = require("../models/visite");
+const CustomResponse = require("../models/customResponse");
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
 
 router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], async (req, res) => {
+    let customResponse = {};
+
     const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) {
+        customResponse = new CustomResponse(400, error.details[0].message);
+        return res.status(400).send(customResponse);
+    }
 
     const visite = await Visite.findById( req.params.id );
-    if (!visite) return res.status(404).send("visite non trouver");
-    if (visite.etat != 0) return res.status(400).send("visite non valide");
-    if (!visite.isAllReparationFinished()) return res.status(400).send("visite non terminé");
+    if (!visite) {
+        customResponse = new CustomResponse(404, "visite non trouver");
+        return res.status(404).send(customResponse);
+    }
+    if (visite.etat != 0) {
+        customResponse = new CustomResponse(400, "visite non valide");
+        return res.status(400).send(customResponse);
+    }
+    if (!visite.isAllReparationFinished()) {
+        customResponse = new CustomResponse(400, "visite non terminé");
+        return res.status(400).send("visite non terminé");
+    }
 
     const bondesortie = new Bondesortie({
         visite: req.params.id,
@@ -32,10 +47,12 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
         
         await session.commitTransaction();
 
-        res.send(bondesortie);
+        customResponse = new CustomResponse(200, '', bondesortie);
+        res.send(customResponse);
     } catch (err) {
         await session.abortTransaction();
-        res.status(500).send("Something went wrong");
+        customResponse = new CustomResponse(500, "Something went wrong");
+        res.status(500).send(customResponse);
     }
     session.endSession();
 });

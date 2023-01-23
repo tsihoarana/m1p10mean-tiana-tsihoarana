@@ -4,16 +4,24 @@ const atelier = require("../middleware/atelier");
 const _ = require("lodash");
 const { Voiture, validate } = require("../models/voiture");
 const { User } = require("../models/user");
+const CustomResponse = require("../models/customResponse");
 const express = require("express");
 const router = express.Router();
 
 router.post("/client/enregistrer", [auth, client], async (req, res) => {
+  let customResponse = {};
   
   const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) {
+    customResponse = new CustomResponse(400, error.details[0].message);
+    return res.status(400).send(customResponse);
+  }
 
   let voiture = await Voiture.findOne({ numero: req.body.numero });
-  if (voiture) return res.status(400).send("voiture déja enregistrer");
+  if (voiture) {
+    customResponse = new CustomResponse(400, 'voiture déja enregistrer');
+    return res.status(400).send(customResponse);
+  }
 
   const user = await User.findById(req.user._id).select("-password");
   req.body.user = user;
@@ -21,26 +29,36 @@ router.post("/client/enregistrer", [auth, client], async (req, res) => {
   voiture = new Voiture({ user: user._id , numero: req.body.numero });
   await voiture.save();
   
-  res.send(_.pick(voiture, ["_id", "numero"]));
+  customResponse = new CustomResponse(200, '', voiture);
+  res.send(customResponse);
 });
 
 router.post("/client/deposer", [auth, client], async (req, res) => {
+  let customResponse = {};
   
   let voiture = await Voiture.findOne({ numero: req.body.numero });
-  if (!voiture) return res.status(404).send("voiture non trouver, verifier le numero demandé");
-  if (voiture.etat != 2) return res.status(400).send("Demande non valide");
+  if (!voiture) {
+    customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero demandé');
+    return res.status(404).send(customResponse);
+  }
+  if (voiture.etat != 2) {
+    customResponse = new CustomResponse(400, 'Demande non valide');
+    return res.status(400).send(customResponse);
+  }
 
   voiture.etat = 0;
   await voiture.save();
 
-  res.send(_.pick(voiture, ["_id", "numero", "etat"]));
+  customResponse = new CustomResponse(200, '', voiture);
+  res.send(customResponse);
 });
 
 router.get("/atelier/demande", [auth, atelier], async (req, res) => {
 
-  let voitures = await Voiture.find({ etat: 0 });
+  const voitures = await Voiture.find({ etat: 0 });
 
-  res.send(voitures);
+  const customResponse = new CustomResponse(200, '', voitures);
+  res.send(customResponse);
 });
 
 module.exports = router;

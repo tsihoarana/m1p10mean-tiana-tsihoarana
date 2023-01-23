@@ -1,3 +1,4 @@
+const CustomResponse = require("../models/customResponse");
 const winston = require('winston');
 
 module.exports = function(err, req, res, next){
@@ -9,6 +10,6 @@ module.exports = function(err, req, res, next){
   // verbose
   // debug 
   // silly
-
-  res.status(500).send('Something failed.');
+  const customResponse = new CustomResponse(500, 'Something failed.');
+  res.status(500).send(customResponse);
 }
