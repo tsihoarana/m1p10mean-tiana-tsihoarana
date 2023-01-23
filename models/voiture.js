@@ -37,7 +37,8 @@ function validateVisite(visite) {
 
 function validateVoiture(voiture) {
   const schema = {
-    numero: Joi.string().min(6).max(7).required()
+    numero: Joi.string().min(6).max(7).required(),
+    image: Joi.string()
   };
 
   return Joi.validate(voiture, schema);
