@@ -3,6 +3,10 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
+// code_type:
+// 0: client
+// 1: resp atelier
+// 2: resp financier
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -23,7 +27,12 @@ const userSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 1024
   },
-  isAdmin: Boolean
+  code_type: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 2
+  }
 });
 
 userSchema.methods.generateAuthToken = function() {
@@ -32,7 +41,7 @@ userSchema.methods.generateAuthToken = function() {
       _id: this._id,
       name: this.name,
       email: this.email,
-      isAdmin: this.isAdmin
+      code_type: this.code_type
     },
     config.get("jwtPrivateKey")
   );
@@ -63,3 +72,4 @@ function validateUser(user) {
 
 exports.User = User;
 exports.validate = validateUser;
+exports.userSchema = userSchema;

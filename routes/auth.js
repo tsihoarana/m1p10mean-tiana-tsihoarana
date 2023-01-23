@@ -2,25 +2,37 @@ const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const {User} = require('../models/user');
+const CustomResponse = require("../models/customResponse");
 const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
+  let customResponse = {};
+
   const { error } = validate(req.body); 
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) {
+    customResponse = new CustomResponse(400, error.details[0].message);
+    return res.status(400).send(customResponse);
+  }
 
   let user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send('Invalid email or password.');
+  if (!user) {
+    customResponse = new CustomResponse(400, 'Invalid email or password.');
+    return res.status(400).send(customResponse);
+  }
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) return res.status(400).send('Invalid email or password.');
+  if (!validPassword) {
+    customResponse = new CustomResponse(400, 'Invalid email or password.');
+    return res.status(400).send(customResponse);
+  }
 
   const token = user.generateAuthToken();
-  // res.send(token);
-  res
-    .header("x-auth-token", token)
-    .send(_.pick(user, ["_id", "name", "email"]));
+  user = _.pick(user, ["_id", "name", "email", "code_type"]);
+  customResponse = new CustomResponse(200, '', {token, user});
+
+  res.send(customResponse);
 });
 
 function validate(req) {
