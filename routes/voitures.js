@@ -8,6 +8,14 @@ const CustomResponse = require("../models/customResponse");
 const express = require("express");
 const router = express.Router();
 
+router.get("/client", [auth, client], async (req, res) => {
+
+  const voitures = await Voiture.find({ user: req.user._id });
+
+  const customResponse = new CustomResponse(200, '', voitures);
+  res.send(customResponse);
+});
+
 router.post("/client/enregistrer", [auth, client], async (req, res) => {
   let customResponse = {};
   
