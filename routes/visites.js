@@ -6,6 +6,7 @@ const { Visite } = require("../models/visite");
 const { User } = require("../models/user");
 const { Voiture } = require("../models/voiture");
 const CustomResponse = require("../models/customResponse");
+const CustomConfig = require("../models/customConfig");
 const express = require("express");
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get("/client/encours", [auth, client], async (req, res) => {
   const user = await User.findById(req.user._id).select("-password");
   req.body.user = user;
 
-  const visites = await Visite.find({ etat: { $ne: 2 }, user: user._id });
+  const visites = await Visite.find({ etat: { $ne: CustomConfig.VISITE_PAYE }, user: user._id });
 
   const customResponse = new CustomResponse(200, '', visites);
   res.send(customResponse);
@@ -39,7 +40,7 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
     customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero');
     return res.send(customResponse);
   }
-  if (voiture.etat != 1) {
+  if (voiture.etat != CustomConfig.VOITURE_ETAT_ACCEPTER) {
     customResponse = new CustomResponse(400, 'voiture non valide');
     return res.send(customResponse);
   }
@@ -49,7 +50,6 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
 
   const visite = new Visite(_.pick(req.body, 
     ["user", "voiture", "etat", "date_debut"]));
-  visite.etat = 0;
   await visite.save();
 
   customResponse = new CustomResponse(200, '', visite);

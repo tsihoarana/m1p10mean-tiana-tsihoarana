@@ -6,6 +6,7 @@ const _ = require("lodash");
 const { Bondesortie, validate } = require("../models/bondesortie");
 const { Visite } = require("../models/visite");
 const CustomResponse = require("../models/customResponse");
+const CustomConfig = require("../models/customConfig");
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -24,7 +25,7 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
         customResponse = new CustomResponse(404, "visite non trouver");
         return res.send(customResponse);
     }
-    if (visite.etat != 0) {
+    if (visite.etat != CustomConfig.VISITE_ENCOURS) {
         customResponse = new CustomResponse(400, "visite non valide");
         return res.send(customResponse);
     }

@@ -6,6 +6,7 @@ const _ = require("lodash");
 const { Reparation, validate } = require("../models/reparation");
 const { Visite } = require("../models/visite");
 const CustomResponse = require("../models/customResponse");
+const CustomConfig = require("../models/customConfig");
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -24,7 +25,7 @@ router.post("/atelier/create/visite/:id", [auth, atelier, validateObjectId], asy
         customResponse = new CustomResponse(404, "visite non trouver");
         return res.send(customResponse);
     }
-    if (visite.etat != 0) {
+    if (visite.etat != CustomConfig.VISITE_ENCOURS) {
         customResponse = new CustomResponse(400, "visite non valide");
         return res.send(customResponse);
     }
@@ -63,7 +64,7 @@ router.get("/client/visite/:id", [auth, client, validateObjectId], async (req, r
         customResponse = new CustomResponse(404, 'visite non trouver');
         return res.send(customResponse);
     }
-    if (visite.etat == 2) {
+    if (visite.etat == CustomConfig.VISITE_PAYE) {
         customResponse = new CustomResponse(400, 'visite deja terminée et payée');
         return res.send(customResponse);
     }
@@ -92,7 +93,7 @@ router.put("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, vali
         customResponse = new CustomResponse(404, 'visite non trouver');
         return res.send(customResponse);
     }
-    if (visite.etat == 2) {
+    if (visite.etat == CustomConfig.VISITE_PAYE) {
         customResponse = new CustomResponse(400, 'visite deja terminée et payée');
         return res.send(customResponse);
     }
@@ -127,7 +128,7 @@ router.delete("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, v
         customResponse = new CustomResponse(404, 'visite non trouver');
         return res.send(customResponse);
     }
-    if (visite.etat == 2) {
+    if (visite.etat == CustomConfig.VISITE_PAYE) {
         customResponse = new CustomResponse(400, 'visite deja terminée et payée');
         return res.send(customResponse);
     }

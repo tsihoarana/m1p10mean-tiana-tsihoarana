@@ -5,6 +5,7 @@ const _ = require("lodash");
 const { Voiture, validate } = require("../models/voiture");
 const { User } = require("../models/user");
 const CustomResponse = require("../models/customResponse");
+const CustomConfig = require("../models/customConfig");
 const express = require("express");
 const router = express.Router();
 
@@ -54,7 +55,7 @@ router.post("/client/deposer", [auth, client], async (req, res) => {
     customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero demandé');
     return res.send(customResponse);
   }
-  if (voiture.etat != 2) {
+  if (voiture.etat != CustomConfig.VOITURE_ETAT_SORTIE) {
     customResponse = new CustomResponse(400, 'Demande non valide');
     return res.send(customResponse);
   }
@@ -68,7 +69,7 @@ router.post("/client/deposer", [auth, client], async (req, res) => {
 
 router.get("/atelier/demande", [auth, atelier], async (req, res) => {
 
-  const voitures = await Voiture.find({ etat: 0 });
+  const voitures = await Voiture.find({ etat: CustomConfig.VOITURE_ETAT_DEMANDE });
 
   const customResponse = new CustomResponse(200, '', voitures);
   res.send(customResponse);
