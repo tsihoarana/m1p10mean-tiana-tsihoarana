@@ -118,7 +118,7 @@ router.delete("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, v
     let customResponse = {};
 
     if (!mongoose.Types.ObjectId.isValid(req.params.reparation_id)) {
-        customResponse = new CustomResponse(404, 'Invalid ID.');
+        customResponse = new CustomResponse(404, 'ID invalide');
         return res.send(customResponse);
     }
 

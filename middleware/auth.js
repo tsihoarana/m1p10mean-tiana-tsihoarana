@@ -9,7 +9,7 @@ module.exports = function(req, res, next) {
   const token = req.header("x-auth-token");
   if (!token) {
     customResponse = new CustomResponse(401, 'Access denied. No token provided.');
-    return res.status(401).send(customResponse);
+    return res.send(customResponse);
   }
 
   try {
@@ -18,6 +18,6 @@ module.exports = function(req, res, next) {
     next();
   } catch (ex) {
     customResponse = new CustomResponse(400, 'Invalid token.');
-    res.status(400).send(customResponse);
+    res.send(customResponse);
   }
 };

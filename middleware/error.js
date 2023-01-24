@@ -11,5 +11,5 @@ module.exports = function(err, req, res, next){
   // debug 
   // silly
   const customResponse = new CustomResponse(500, 'Something failed.');
-  res.status(500).send(customResponse);
+  res.send(customResponse);
 }

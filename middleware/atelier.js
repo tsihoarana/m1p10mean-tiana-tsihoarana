@@ -7,7 +7,7 @@ module.exports = function(req, res, next) {
   
     if (req.user.code_type !== 1) {
       const customResponse = new CustomResponse(403, 'Access denied.');
-      return res.status(403).send(customResponse);
+      return res.send(customResponse);
     }
   
     next();
