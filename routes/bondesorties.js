@@ -39,7 +39,7 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
         prix: visite.sommeReparation()
     });
 
-    visite.etat = 1;
+    visite.etat = CustomConfig.VISITE_TERMINER_NON_PAYE;
     const session = await mongoose.startSession();
     try {
         session.startTransaction();

@@ -34,6 +34,9 @@ const voitureSchema = new mongoose.Schema({
     type: Number,
     default: 2
   },
+  date_depot: {
+    type: Date
+  },
   visites: [ visiteSchema ]
 });
 
@@ -50,6 +53,10 @@ voitureSchema.methods.setMarque = function(marque) {
 voitureSchema.methods.setModele = function(modele) {
   if (modele)
     this.modele = modele;
+}
+
+voitureSchema.methods.resetDateDepot = function() {
+  this.date_depot = new Date();
 }
 
 const Voiture = mongoose.model("Voiture", voitureSchema);

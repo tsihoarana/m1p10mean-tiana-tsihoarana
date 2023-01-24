@@ -52,9 +52,7 @@ const Visite = mongoose.model("Visite", visiteSchema);
 
 function validateVisite(visite) {
     const schema = {
-            etat: Joi.Number()
-            .min(0)
-            .required()
+        etat: Joi.Number().min(0).required()
     };
 
     return Joi.validate(visite, schema);
