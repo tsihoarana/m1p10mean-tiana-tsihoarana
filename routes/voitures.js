@@ -35,7 +35,11 @@ router.post("/client/enregistrer", [auth, client], async (req, res) => {
   req.body.user = user;
 
   voiture = new Voiture({ user: user._id , numero: req.body.numero });
-  voiture.image = Buffer.from((req.body.image).split(",")[1],"base64");
+  // optional
+  voiture.setImage(req.body.image);
+  voiture.setMarque(req.body.marque);
+  voiture.setModele(req.body.modele);
+  
   await voiture.save();
   
   customResponse = new CustomResponse(200, '', voiture);
