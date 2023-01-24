@@ -19,7 +19,8 @@ const visiteSchema = new mongoose.Schema({
         max: 10
     },
     date_debut: {
-        type: Date
+        type: Date,
+        default: new Date()
     },
     date_fin: {
         type: Date

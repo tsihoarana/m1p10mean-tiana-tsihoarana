@@ -50,7 +50,7 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
   req.body.etat = CustomConfig.VISITE_ENCOURS;
 
   const visite = new Visite(_.pick(req.body, 
-    ["user", "voiture", "etat", "date_debut"]));
+    ["user", "voiture", "etat"]));
   await visite.save();
 
   customResponse = new CustomResponse(200, '', visite);
