@@ -98,4 +98,15 @@ router.post("/atelier/demande/accepter/:id", [auth, atelier, validateObjectId], 
   res.send(customResponse);
 });
 
+router.get("/atelier", [auth, atelier], async (req, res) => {
+  const etat_query = req.query.etat ? { etat: req.query.etat } : {};
+  const num_query = req.query.numero ? { numero: req.query.numero } : {};
+  const voitures = await Voiture
+    .find(etat_query)
+    .find(num_query);
+
+  const customResponse = new CustomResponse(200, '', voitures);
+  res.send(customResponse);
+});
+
 module.exports = router;
