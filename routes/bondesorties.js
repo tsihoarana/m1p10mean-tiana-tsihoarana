@@ -15,21 +15,21 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
 
     const { error } = validate(req.body);
     if (error) {
-        customResponse = new CustomResponse(400, error.details[0].message, {});
+        customResponse = new CustomResponse(400, error.details[0].message);
         return res.send(customResponse);
     }
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
-        customResponse = new CustomResponse(404, "visite non trouver", {});
+        customResponse = new CustomResponse(404, "visite non trouver");
         return res.send(customResponse);
     }
     if (visite.etat != 0) {
-        customResponse = new CustomResponse(400, "visite non valide", {});
+        customResponse = new CustomResponse(400, "visite non valide");
         return res.send(customResponse);
     }
     if (!visite.isAllReparationFinished()) {
-        customResponse = new CustomResponse(400, "visite non terminé", {});
+        customResponse = new CustomResponse(400, "visite non terminé");
         return res.send(customResponse);
     }
 
@@ -51,7 +51,7 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
         res.send(customResponse);
     } catch (err) {
         await session.abortTransaction();
-        customResponse = new CustomResponse(500, "Something went wrong", {});
+        customResponse = new CustomResponse(500, "Something went wrong");
         res.send(customResponse);
     }
     session.endSession();

@@ -21,11 +21,11 @@ router.post("/atelier/create/visite/:id", [auth, atelier, validateObjectId], asy
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
-        customResponse = new CustomResponse(404, "visite non trouver", {});
+        customResponse = new CustomResponse(404, "visite non trouver");
         return res.send(customResponse);
     }
     if (visite.etat != 0) {
-        customResponse = new CustomResponse(400, "visite non valide", {});
+        customResponse = new CustomResponse(400, "visite non valide");
         return res.send(customResponse);
     }
 
@@ -46,7 +46,7 @@ router.get("/atelier/visite/:id", [auth, atelier, validateObjectId], async (req,
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
-        customResponse = new CustomResponse(404, 'visite non trouver', {});
+        customResponse = new CustomResponse(404, 'visite non trouver');
         return res.send(customResponse);
     }
     // if (visite.etat != 0) return res.status(400).send("visite non valide");
@@ -60,11 +60,11 @@ router.get("/client/visite/:id", [auth, client, validateObjectId], async (req, r
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
-        customResponse = new CustomResponse(404, 'visite non trouver', {});
+        customResponse = new CustomResponse(404, 'visite non trouver');
         return res.send(customResponse);
     }
     if (visite.etat == 2) {
-        customResponse = new CustomResponse(400, 'visite deja terminée et payée', {});
+        customResponse = new CustomResponse(400, 'visite deja terminée et payée');
         return res.send(customResponse);
     }
     
@@ -77,7 +77,7 @@ router.put("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, vali
     let customResponse = {};
 
     if (!mongoose.Types.ObjectId.isValid(req.params.reparation_id)) {
-        customResponse = new CustomResponse(404, 'Invalid ID.', {});
+        customResponse = new CustomResponse(404, 'Invalid ID.');
         return res.send(customResponse);
     }
 
@@ -89,17 +89,17 @@ router.put("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, vali
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
-        customResponse = new CustomResponse(404, 'visite non trouver', {});
+        customResponse = new CustomResponse(404, 'visite non trouver');
         return res.send(customResponse);
     }
     if (visite.etat == 2) {
-        customResponse = new CustomResponse(400, 'visite deja terminée et payée', {});
+        customResponse = new CustomResponse(400, 'visite deja terminée et payée');
         return res.send(customResponse);
     }
 
     const reparation = visite.reparations.find(x => x._id == req.params.reparation_id);
     if (!reparation) {
-        customResponse = new CustomResponse(404, 'reparation non trouver', {});
+        customResponse = new CustomResponse(404, 'reparation non trouver');
         return res.send(customResponse);
     }
 
@@ -118,23 +118,23 @@ router.delete("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, v
     let customResponse = {};
 
     if (!mongoose.Types.ObjectId.isValid(req.params.reparation_id)) {
-        customResponse = new CustomResponse(404, 'ID invalide', {});
+        customResponse = new CustomResponse(404, 'ID invalide');
         return res.send(customResponse);
     }
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
-        customResponse = new CustomResponse(404, 'visite non trouver', {});
+        customResponse = new CustomResponse(404, 'visite non trouver');
         return res.send(customResponse);
     }
     if (visite.etat == 2) {
-        customResponse = new CustomResponse(400, 'visite deja terminée et payée', {});
+        customResponse = new CustomResponse(400, 'visite deja terminée et payée');
         return res.send(customResponse);
     }
 
     const reparation = visite.reparations.find(x => x._id == req.params.reparation_id);
     if (!reparation) {
-        customResponse = new CustomResponse(404, 'reparation non trouver'), {};
+        customResponse = new CustomResponse(404, 'reparation non trouver');
         return res.send(customResponse);
     }
 

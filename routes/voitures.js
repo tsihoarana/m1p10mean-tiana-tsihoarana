@@ -21,13 +21,13 @@ router.post("/client/enregistrer", [auth, client], async (req, res) => {
   
   const { error } = validate(req.body);
   if (error) {
-    customResponse = new CustomResponse(400, error.details[0].message, {});
+    customResponse = new CustomResponse(400, error.details[0].message);
     return res.send(customResponse);
   }
 
   let voiture = await Voiture.findOne({ numero: req.body.numero });
   if (voiture) {
-    customResponse = new CustomResponse(400, 'voiture déja enregistrer', {});
+    customResponse = new CustomResponse(400, 'voiture déja enregistrer');
     return res.send(customResponse);
   }
 
@@ -51,11 +51,11 @@ router.post("/client/deposer", [auth, client], async (req, res) => {
   
   let voiture = await Voiture.findOne({ numero: req.body.numero });
   if (!voiture) {
-    customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero demandé', {});
+    customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero demandé');
     return res.send(customResponse);
   }
   if (voiture.etat != 2) {
-    customResponse = new CustomResponse(400, 'Demande non valide', {});
+    customResponse = new CustomResponse(400, 'Demande non valide');
     return res.send(customResponse);
   }
 
