@@ -82,4 +82,24 @@ router.get("/atelier/voiture/:numero", [auth, atelier], async (req, res) => {
   res.send(customResponse);
 });
 
+router.get("/atelier", [auth, atelier], async (req, res) => {
+  const search_query = req.query.etat ? { etat: req.query.etat } : {};
+  const visites = await Visite
+    .find(search_query)
+    .sort({ date_debut: -1 });
+
+  const customResponse = new CustomResponse(200, '', visites);
+  res.send(customResponse);
+});
+
+router.get("/client", [auth, client], async (req, res) => {
+  const search_query = req.query.etat ? { etat: req.query.etat, user: req.user._id } : { user: req.user._id };
+  const visites = await Visite
+    .find(search_query)
+    .sort({ date_debut: -1 });
+
+  const customResponse = new CustomResponse(200, '', visites);
+  res.send(customResponse);
+});
+
 module.exports = router;
