@@ -47,6 +47,7 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
 
   req.body.user = voiture.user;
   req.body.voiture = voiture._id;
+  req.body.etat = CustomConfig.VISITE_ENCOURS;
 
   const visite = new Visite(_.pick(req.body, 
     ["user", "voiture", "etat", "date_debut"]));
