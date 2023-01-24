@@ -25,7 +25,14 @@ router.get("/client/voiture/:numero", [auth, client], async (req, res) => {
   req.body.user = user;
 
   const voiture = await Voiture.findOne({ numero: req.params.numero });
-
+  if (!voiture) {
+    customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero');
+    return res.send(customResponse);
+  }
+  if (voiture.user != req.user._id) {
+    customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero demandé');
+    return res.send(customResponse);
+  }
   const visites = await Visite.find({ user: user._id, voiture: voiture._id });
 
   const customResponse = new CustomResponse(200, '', visites);
@@ -54,6 +61,24 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
   await visite.save();
 
   customResponse = new CustomResponse(200, '', visite);
+  res.send(customResponse);
+});
+
+router.get("/atelier/voiture/:numero", [auth, atelier], async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+  req.body.user = user;
+
+  const voiture = await Voiture.findOne({ numero: req.params.numero });
+  if (!voiture) {
+    customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero');
+    return res.send(customResponse);
+  }
+
+  const visites = await Visite
+    .find({ voiture: voiture._id })
+    .sort({ date_debut: -1 });
+
+  const customResponse = new CustomResponse(200, '', visites);
   res.send(customResponse);
 });
 

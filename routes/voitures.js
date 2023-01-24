@@ -57,7 +57,7 @@ router.post("/client/deposer", [auth, client], async (req, res) => {
     return res.send(customResponse);
   }
   if (voiture.user != req.user._id) {
-    customResponse = new CustomResponse(400, 'voiture non trouver, verifier le numero demandé');
+    customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero demandé');
     return res.send(customResponse);
   }
   if (voiture.etat != CustomConfig.VOITURE_ETAT_SORTIE) {
