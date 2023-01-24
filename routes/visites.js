@@ -37,11 +37,11 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
   const voiture = await Voiture.findOne({ numero: req.params.numero });
   if (!voiture) {
     customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero');
-    return res.status(404).send(customResponse);
+    return res.send(customResponse);
   }
   if (voiture.etat != 1) {
     customResponse = new CustomResponse(400, 'voiture non valide');
-    return res.status(400).send(customResponse);
+    return res.send(customResponse);
   }
 
   req.body.user = voiture.user;

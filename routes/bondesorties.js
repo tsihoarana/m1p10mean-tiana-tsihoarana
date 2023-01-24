@@ -16,21 +16,21 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
     const { error } = validate(req.body);
     if (error) {
         customResponse = new CustomResponse(400, error.details[0].message);
-        return res.status(400).send(customResponse);
+        return res.send(customResponse);
     }
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
         customResponse = new CustomResponse(404, "visite non trouver");
-        return res.status(404).send(customResponse);
+        return res.send(customResponse);
     }
     if (visite.etat != 0) {
         customResponse = new CustomResponse(400, "visite non valide");
-        return res.status(400).send(customResponse);
+        return res.send(customResponse);
     }
     if (!visite.isAllReparationFinished()) {
         customResponse = new CustomResponse(400, "visite non terminé");
-        return res.status(400).send("visite non terminé");
+        return res.send(customResponse);
     }
 
     const bondesortie = new Bondesortie({
@@ -52,7 +52,7 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
     } catch (err) {
         await session.abortTransaction();
         customResponse = new CustomResponse(500, "Something went wrong");
-        res.status(500).send(customResponse);
+        res.send(customResponse);
     }
     session.endSession();
 });

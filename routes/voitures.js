@@ -22,13 +22,13 @@ router.post("/client/enregistrer", [auth, client], async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     customResponse = new CustomResponse(400, error.details[0].message);
-    return res.status(400).send(customResponse);
+    return res.send(customResponse);
   }
 
   let voiture = await Voiture.findOne({ numero: req.body.numero });
   if (voiture) {
     customResponse = new CustomResponse(400, 'voiture déja enregistrer');
-    return res.status(400).send(customResponse);
+    return res.send(customResponse);
   }
 
   const user = await User.findById(req.user._id).select("-password");
@@ -48,11 +48,11 @@ router.post("/client/deposer", [auth, client], async (req, res) => {
   let voiture = await Voiture.findOne({ numero: req.body.numero });
   if (!voiture) {
     customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero demandé');
-    return res.status(404).send(customResponse);
+    return res.send(customResponse);
   }
   if (voiture.etat != 2) {
     customResponse = new CustomResponse(400, 'Demande non valide');
-    return res.status(400).send(customResponse);
+    return res.send(customResponse);
   }
 
   voiture.etat = 0;
