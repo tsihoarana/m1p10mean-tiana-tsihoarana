@@ -8,7 +8,7 @@ module.exports = function(req, res, next) {
 
   const token = req.header("x-auth-token");
   if (!token) {
-    customResponse = new CustomResponse(401, 'Access denied. No token provided.');
+    customResponse = new CustomResponse(401, 'Access denied. No token provided.', {});
     return res.send(customResponse);
   }
 
@@ -17,7 +17,7 @@ module.exports = function(req, res, next) {
     req.user = decoded;
     next();
   } catch (ex) {
-    customResponse = new CustomResponse(400, 'Invalid token.');
+    customResponse = new CustomResponse(400, 'Invalid token.', {});
     res.send(customResponse);
   }
 };

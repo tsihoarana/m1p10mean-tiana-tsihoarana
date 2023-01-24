@@ -16,7 +16,11 @@ const voitureSchema = new mongoose.Schema({
     unique: true
   },
   image: {
-    type: Buffer
+    type: Buffer,
+    // get: (image) => {
+    //   let u8 = new Uint8Array(image);
+    //   return 'data:image/png;base64,' + Buffer.from(u8).toString('base64');
+    // }
   },
   etat: {
     type: Number,

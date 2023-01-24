@@ -12,19 +12,19 @@ router.post('/', async (req, res) => {
 
   const { error } = validate(req.body); 
   if (error) {
-    customResponse = new CustomResponse(400, error.details[0].message);
+    customResponse = new CustomResponse(400, error.details[0].message, {});
     return res.send(customResponse);
   }
 
   let user = await User.findOne({ email: req.body.email });
   if (!user) {
-    customResponse = new CustomResponse(400, 'Email ou mot de passe invalide.');
+    customResponse = new CustomResponse(400, 'Email ou mot de passe invalide.', {});
     return res.send(customResponse);
   }
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) {
-    customResponse = new CustomResponse(400, 'Email ou mot de passe invalide.');
+    customResponse = new CustomResponse(400, 'Email ou mot de passe invalide.', {});
     return res.send(customResponse);
   }
 

@@ -10,6 +10,6 @@ module.exports = function(err, req, res, next){
   // verbose
   // debug 
   // silly
-  const customResponse = new CustomResponse(500, 'Something failed.');
+  const customResponse = new CustomResponse(500, 'Something failed.', {});
   res.send(customResponse);
 }

@@ -6,7 +6,7 @@ module.exports = function(req, res, next) {
     // if (!config.get("requiresAuth")) return next();
   
     if (req.user.code_type !== 1) {
-      const customResponse = new CustomResponse(403, 'Access denied.');
+      const customResponse = new CustomResponse(403, 'Access denied.', {});
       return res.send(customResponse);
     }
   
