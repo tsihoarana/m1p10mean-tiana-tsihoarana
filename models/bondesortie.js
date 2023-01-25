@@ -16,7 +16,10 @@ const bondesortieSchema = new mongoose.Schema({
     required: true,
     min: 0,
     default: 0
-  }
+  },
+  date_paye: {
+    type: Date
+},
 });
 
 const Bondesortie = mongoose.model("Bondesortie", bondesortieSchema);
