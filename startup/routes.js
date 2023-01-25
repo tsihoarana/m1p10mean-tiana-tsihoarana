@@ -5,6 +5,7 @@ const voitures = require('../routes/voitures');
 const visites = require('../routes/visites');
 const reparations = require('../routes/reparations');
 const bondesorties = require('../routes/bondesorties');
+const statistiques = require('../routes/statistiques');
 const error = require('../middleware/error');
 
 module.exports = function(app) {
@@ -15,5 +16,6 @@ module.exports = function(app) {
   app.use('/api/visites', visites);
   app.use('/api/reparations', reparations);
   app.use('/api/bondesorties', bondesorties);
+  app.use('/api/statistiques', statistiques);
   app.use(error);
 }

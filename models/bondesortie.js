@@ -1,5 +1,7 @@
 const Joi = require("joi");
+const { and } = require("joi/lib/types/object");
 const mongoose = require("mongoose");
+const CustomConfig = require("./customConfig");
 
 const bondesortieSchema = new mongoose.Schema({
   visite: {
@@ -21,6 +23,18 @@ const bondesortieSchema = new mongoose.Schema({
     type: Date
 },
 });
+
+bondesortieSchema.statics.chiffreAffaire = async function (date_start, date_end) {
+  const query = [
+    { date_paye: { $gte: date_start , $lte: date_end, $exists: true } },
+    { etat: CustomConfig.BON_DE_SORTIE_PAYE }
+  ];
+  const bondesorties = await this
+    .find()
+    .and(query);
+  
+  return bondesorties.reduce((acc, bondesortie) => acc + bondesortie.prix, 0);
+}
 
 const Bondesortie = mongoose.model("Bondesortie", bondesortieSchema);
 
