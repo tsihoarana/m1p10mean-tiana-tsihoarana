@@ -25,7 +25,7 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
         customResponse = new CustomResponse(404, "visite non trouver");
         return res.send(customResponse);
     }
-    if (visite.etat != CustomConfig.VISITE_ENCOURS) {
+    if (visite.etat != CustomConfig.VISITE_TERMINER_NON_PAYE) {
         customResponse = new CustomResponse(400, "visite non valide");
         return res.send(customResponse);
     }
@@ -56,6 +56,12 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
         res.send(customResponse);
     }
     session.endSession();
+});
+
+router.post("/financier/:id/payer", [auth, atelier, validateObjectId], async (req, res) => {
+    let customResponse = {};
+
+
 });
   
 module.exports = router;

@@ -8,6 +8,7 @@ const { Voiture } = require("../models/voiture");
 const CustomResponse = require("../models/customResponse");
 const CustomConfig = require("../models/customConfig");
 const express = require("express");
+const validateObjectId = require("../middleware/validateObjectId");
 const router = express.Router();
 
 router.get("/client/encours", [auth, client], async (req, res) => {
@@ -21,6 +22,8 @@ router.get("/client/encours", [auth, client], async (req, res) => {
 });
 
 router.get("/client/voiture/:numero", [auth, client], async (req, res) => {
+  let customResponse = {};
+
   const user = await User.findById(req.user._id).select("-password");
   req.body.user = user;
 
@@ -35,7 +38,7 @@ router.get("/client/voiture/:numero", [auth, client], async (req, res) => {
   }
   const visites = await Visite.find({ user: user._id, voiture: voiture._id });
 
-  const customResponse = new CustomResponse(200, '', visites);
+  customResponse = new CustomResponse(200, '', visites);
   res.send(customResponse);
 });
 
@@ -100,6 +103,31 @@ router.get("/client", [auth, client], async (req, res) => {
 
   const customResponse = new CustomResponse(200, '', visites);
   res.send(customResponse);
+});
+
+router.get("/atelier/terminer/:id", [auth, atelier, validateObjectId], async (req, res) => {
+  let customResponse = {};
+
+  const visite = await Visite.findById(req.params.id);
+  if (!visite) {
+    customResponse = new CustomResponse(404, 'visite non trouver');
+    return res.send(customResponse);
+  }
+  if (!visite.isAllReparationFinished()) {
+    customResponse = new CustomResponse(400, "Reparation du visite non terminé");
+    return res.send(customResponse);
+  }
+  if (visite.etat != CustomConfig.VISITE_ENCOURS) {
+    customResponse = new CustomResponse(400, "visite non valide");
+    return res.send(customResponse);
+  }
+
+  visite.date_fin = req.body.date_fin || new Date();
+  visite.etat = CustomConfig.VISITE_TERMINER_NON_PAYE;
+  await visite.save();
+
+  customResponse = new CustomResponse(200, '', visite);
+  return res.send(customResponse);
 });
 
 module.exports = router;
