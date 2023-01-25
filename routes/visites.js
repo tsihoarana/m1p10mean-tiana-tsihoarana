@@ -105,7 +105,7 @@ router.get("/client", [auth, client], async (req, res) => {
   res.send(customResponse);
 });
 
-router.get("/atelier/terminer/:id", [auth, atelier, validateObjectId], async (req, res) => {
+router.post("/atelier/terminer/:id", [auth, atelier, validateObjectId], async (req, res) => {
   let customResponse = {};
 
   const visite = await Visite.findById(req.params.id);
