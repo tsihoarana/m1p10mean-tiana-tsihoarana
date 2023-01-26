@@ -155,4 +155,22 @@ router.post("/client/recuperer/:numero", [auth, client], async (req, res) => {
   session.endSession();
 });
 
+router.put("/client/:numero/update", [auth, client], async (req, res) => {
+  let customResponse = {};
+
+  let voiture = await Voiture.findOne({numero: req.params.numero, user: req.user._id});
+  if (!voiture) {
+    customResponse = new CustomResponse(404, 'Voiture non trouver');
+    return res.send(customResponse);
+  }
+  voiture.setImage(req.body.image);
+  voiture.setMarque(req.body.marque);
+  voiture.setModele(req.body.modele);
+
+  await voiture.save();
+
+  customResponse = new CustomResponse(200, '', voiture);
+  res.send(customResponse);
+});
+
 module.exports = router;
