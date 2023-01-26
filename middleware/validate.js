@@ -5,7 +5,7 @@ module.exports = (validator) => {
     const { error } = validator(req.body);  
     if (error) {
       const customResponse = new CustomResponse(400, error.details[0].message);
-      return res.status(400).send(customResponse);
+      return res.send(customResponse);
     }
     next();
   }

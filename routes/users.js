@@ -30,13 +30,13 @@ router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     customResponse = new CustomResponse(400, error.details[0].message);
-    return res.status(400).send(customResponse);
+    return res.send(customResponse);
   }
 
   let user = await User.findOne({ email: req.body.email });
   if (user) {
-    customResponse = new CustomResponse(400, 'User already registered.');
-    return res.status(400).send(customResponse);
+    customResponse = new CustomResponse(400, 'Client deja enregistrer.');
+    return res.send(customResponse);
   }
 
   user = new User(_.pick(req.body, ["name", "email", "password"]));

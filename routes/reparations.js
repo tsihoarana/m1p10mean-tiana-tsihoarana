@@ -6,6 +6,7 @@ const _ = require("lodash");
 const { Reparation, validate } = require("../models/reparation");
 const { Visite } = require("../models/visite");
 const CustomResponse = require("../models/customResponse");
+const CustomConfig = require("../models/customConfig");
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -16,17 +17,17 @@ router.post("/atelier/create/visite/:id", [auth, atelier, validateObjectId], asy
     const { error } = validate(req.body);
     if (error) {
         customResponse = new CustomResponse(400, error.details[0].message);
-        return res.status(400).send(customResponse);
+        return res.send(customResponse);
     }
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
         customResponse = new CustomResponse(404, "visite non trouver");
-        return res.status(404).send(customResponse);
+        return res.send(customResponse);
     }
-    if (visite.etat != 0) {
+    if (visite.etat != CustomConfig.VISITE_ENCOURS) {
         customResponse = new CustomResponse(400, "visite non valide");
-        return res.status(400).send(customResponse);
+        return res.send(customResponse);
     }
 
     let reparation = new Reparation(_.pick(req.body, 
@@ -47,7 +48,7 @@ router.get("/atelier/visite/:id", [auth, atelier, validateObjectId], async (req,
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
         customResponse = new CustomResponse(404, 'visite non trouver');
-        return res.status(404).send(customResponse);
+        return res.send(customResponse);
     }
     // if (visite.etat != 0) return res.status(400).send("visite non valide");
 
@@ -61,11 +62,11 @@ router.get("/client/visite/:id", [auth, client, validateObjectId], async (req, r
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
         customResponse = new CustomResponse(404, 'visite non trouver');
-        return res.status(404).send(customResponse);
+        return res.send(customResponse);
     }
-    if (visite.etat == 2) {
+    if (visite.etat == CustomConfig.VISITE_PAYE) {
         customResponse = new CustomResponse(400, 'visite deja terminée et payée');
-        return res.status(400).send(customResponse);
+        return res.send(customResponse);
     }
     
     customResponse = new CustomResponse(200, '', _.map(visite.reparations, obj => 
@@ -78,29 +79,29 @@ router.put("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, vali
 
     if (!mongoose.Types.ObjectId.isValid(req.params.reparation_id)) {
         customResponse = new CustomResponse(404, 'Invalid ID.');
-        return res.status(404).send(customResponse);
+        return res.send(customResponse);
     }
 
     const { error } = validate(req.body);
     if (error) {
         customResponse = new CustomResponse(400, error.details[0].message);
-        return res.status(400).send(customResponse);
+        return res.send(customResponse);
     }
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
         customResponse = new CustomResponse(404, 'visite non trouver');
-        return res.status(404).send(customResponse);
+        return res.send(customResponse);
     }
-    if (visite.etat == 2) {
-        customResponse = new CustomResponse(400, 'visite deja terminée et payée');
-        return res.status(400).send(customResponse);
+    if (visite.etat != CustomConfig.VISITE_ENCOURS) {
+        customResponse = new CustomResponse(400, 'visite deja terminée');
+        return res.send(customResponse);
     }
 
     const reparation = visite.reparations.find(x => x._id == req.params.reparation_id);
     if (!reparation) {
         customResponse = new CustomResponse(404, 'reparation non trouver');
-        return res.status(404).send(customResponse);
+        return res.send(customResponse);
     }
 
     reparation.duree = req.body.duree;
@@ -118,24 +119,24 @@ router.delete("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, v
     let customResponse = {};
 
     if (!mongoose.Types.ObjectId.isValid(req.params.reparation_id)) {
-        customResponse = new CustomResponse(404, 'Invalid ID.');
-        return res.status(404).send(customResponse);
+        customResponse = new CustomResponse(404, 'ID invalide');
+        return res.send(customResponse);
     }
 
     const visite = await Visite.findById( req.params.id );
     if (!visite) {
         customResponse = new CustomResponse(404, 'visite non trouver');
-        return res.status(404).send(customResponse);
+        return res.send(customResponse);
     }
-    if (visite.etat == 2) {
+    if (visite.etat == CustomConfig.VISITE_PAYE) {
         customResponse = new CustomResponse(400, 'visite deja terminée et payée');
-        return res.status(400).send(customResponse);
+        return res.send(customResponse);
     }
 
     const reparation = visite.reparations.find(x => x._id == req.params.reparation_id);
     if (!reparation) {
         customResponse = new CustomResponse(404, 'reparation non trouver');
-        return res.status(404).send(customResponse);
+        return res.send(customResponse);
     }
 
     const deleted = visite.reparations.pop(reparation);
