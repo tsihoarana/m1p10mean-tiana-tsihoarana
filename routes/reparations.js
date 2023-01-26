@@ -93,8 +93,8 @@ router.put("/atelier/visite/:id/reparation/:reparation_id", [auth, atelier, vali
         customResponse = new CustomResponse(404, 'visite non trouver');
         return res.send(customResponse);
     }
-    if (visite.etat == CustomConfig.VISITE_PAYE) {
-        customResponse = new CustomResponse(400, 'visite deja terminée et payée');
+    if (visite.etat != CustomConfig.VISITE_ENCOURS) {
+        customResponse = new CustomResponse(400, 'visite deja terminée');
         return res.send(customResponse);
     }
 
