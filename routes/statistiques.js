@@ -9,6 +9,7 @@ const CustomConfig = require("../models/customConfig");
 const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose');
+const { Depense } = require("../models/depense");
 
 router.get("/financier/chiffre_affaire", [auth, financier], async (req, res) => {
     let chiffre_affaire = await Bondesortie.chiffreAffaire(req.query.debut, req.query.fin);
@@ -18,7 +19,7 @@ router.get("/financier/chiffre_affaire", [auth, financier], async (req, res) => 
     res.send(customResponse);
 });
 
-router.get("/financier/chiffre_affaire/mois", [auth], async (req, res) => {
+router.get("/financier/chiffre_affaire/mois", [auth, financier], async (req, res) => {
     let chiffre_affaire = await Bondesortie.chiffreAffaireDuMois(req.query.annee, req.query.mois);
     chiffre_affaire = { chiffre_affaire, annee: req.query.annee, mois: req.query.mois };
 
@@ -31,6 +32,16 @@ router.get("/financier/reparation_moyenne", [auth, financier], async (req, res) 
     reparation_moyenne = { reparation_moyenne };
 
     const customResponse = new CustomResponse(200, '', reparation_moyenne);
+    res.send(customResponse);
+});
+
+router.get("/financier/benefice/mois", [auth, financier], async (req, res) => {
+    let chiffre_affaire = await Bondesortie.chiffreAffaireDuMois(req.query.annee, req.query.mois);
+    let sum_depense = await Depense.duMois(req.query.annee, req.query.mois);
+    let benefice = chiffre_affaire - sum_depense;
+    benefice = { benefice, annee: req.query.annee, mois: req.query.mois };
+
+    const customResponse = new CustomResponse(200, '', benefice);
     res.send(customResponse);
 });
 
