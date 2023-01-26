@@ -172,4 +172,17 @@ router.put("/client/:numero/update", [auth, client], async (req, res) => {
   res.send(customResponse);
 });
 
+router.get("/atelier/:numero", [auth, atelier], async (req, res) => {
+  let customResponse = {};
+
+  const voiture = await Voiture.findOne({numero: req.params.numero});
+  if (!voiture) {
+    customResponse = new CustomResponse(404, 'Voiture non trouver');
+    return res.send(customResponse);
+  }
+
+  customResponse = new CustomResponse(200, '', voiture);
+  res.send(customResponse);
+});
+
 module.exports = router;
