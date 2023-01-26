@@ -28,7 +28,7 @@ router.post("/atelier/create", [auth, financier], async (req, res) => {
     return res.send(customResponse);
 });
 
-router.put("/atelier/:id", [auth, validateObjectId], async (req, res) => {
+router.put("/atelier/:id", [auth, financier, validateObjectId], async (req, res) => {
     let customResponse = {};
   
     const { error } = validate(req.body);
@@ -46,6 +46,21 @@ router.put("/atelier/:id", [auth, validateObjectId], async (req, res) => {
     depense.setPrix(req.body.prix);
 
     await depense.save();
+
+    customResponse = new CustomResponse(200, '', depense);
+    return res.send(customResponse);
+});
+
+router.delete("/atelier/:id", [auth, financier, validateObjectId], async (req, res) => {
+    let customResponse = {};
+
+    let depense = await Depense.findById( req.params.id );
+    if (!depense) {
+      customResponse = new CustomResponse(404, 'Depense non trouver.');
+      return res.send(customResponse);
+    }
+
+    await depense.delete();
 
     customResponse = new CustomResponse(200, '', depense);
     return res.send(customResponse);
