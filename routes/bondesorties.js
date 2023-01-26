@@ -108,4 +108,22 @@ router.get("/client", [auth, client], async (req, res) => {
     res.send(customResponse);
 });
 
+router.get("/financier", [auth, financier], async (req, res) => {
+    const etat_query = req.query.etat ? { etat: req.query.etat } : {};
+    const bondesortie = await Bondesortie
+      .find(etat_query);
+
+    const customResponse = new CustomResponse(200, '', bondesortie);
+    res.send(customResponse);
+});
+
+router.get("/atelier", [auth, atelier], async (req, res) => {
+    const etat_query = req.query.etat ? { etat: req.query.etat } : {};
+    const bondesortie = await Bondesortie
+      .find(etat_query);
+
+    const customResponse = new CustomResponse(200, '', bondesortie);
+    res.send(customResponse);
+});
+
 module.exports = router;
