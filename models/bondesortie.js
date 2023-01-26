@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const CustomConfig = require("./customConfig");
 
 const bondesortieSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
   visite: {
     type: mongoose.Schema.Types.ObjectId,
     required: true

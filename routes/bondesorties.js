@@ -37,7 +37,8 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
 
     const bondesortie = new Bondesortie({
         visite: req.params.id,
-        prix: visite.sommeReparation()
+        prix: visite.sommeReparation(),
+        user: visite.user
     });
 
     visite.etat = CustomConfig.VISITE_TERMINER_NON_PAYE;
@@ -95,5 +96,15 @@ router.post("/financier/:id/payer", [auth, financier, validateObjectId], async (
     }
     session.endSession();
 });
-  
+
+router.get("/client", [auth, client], async (req, res) => {
+    const etat_query = req.query.etat ? { etat: req.query.etat } : {};
+    const user_query = { user: req.user._id };
+    const bondesortie = await Bondesortie
+      .find()
+      .and([etat_query, user_query]);
+
+    const customResponse = new CustomResponse(200, '', bondesortie);
+    res.send(customResponse);
+}); 
 module.exports = router;

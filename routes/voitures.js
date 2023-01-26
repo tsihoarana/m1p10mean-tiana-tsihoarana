@@ -12,7 +12,6 @@ const mongoose = require('mongoose');
 const router = express.Router();
 
 router.get("/client", [auth, client], async (req, res) => {
-
   const voitures = await Voiture.find({ user: req.user._id });
 
   const customResponse = new CustomResponse(200, '', voitures);
