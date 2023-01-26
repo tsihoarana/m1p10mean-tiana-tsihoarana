@@ -32,6 +32,15 @@ depenseSchema.methods.setDate = function(date) {
         this.date = date;
 }
 
+depenseSchema.statics.duMois = async function(year, month) {
+    const start = new Date(year, month, 1);
+	const end = new Date(year, month + 1, 0);
+    const query = { date: {$gte: start, $lte: end} };
+    const depenses = await this.find(query);
+
+    return depenses.reduce((acc, depense) => acc + depense.prix, 0);
+}
+
 const Depense = mongoose.model("Depense", depenseSchema);
 
 function validateDepense(depense) {

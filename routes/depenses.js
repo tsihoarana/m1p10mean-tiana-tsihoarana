@@ -73,4 +73,12 @@ router.get("/atelier", [auth, financier], async (req, res) => {
     return res.send(customResponse);
 });
 
+router.get("/atelier/sum", [auth, financier], async (req, res) => {
+    let sum_depense = await Depense.duMois(req.query.annee, req.query.mois);
+    sum_depense = { sum_depense, mois: req.query.mois, annee: req.query.annee };
+
+    const customResponse = new CustomResponse(200, '', sum_depense);
+    return res.send(customResponse);
+});
+
 module.exports = router;
