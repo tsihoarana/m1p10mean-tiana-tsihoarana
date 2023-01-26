@@ -8,6 +8,7 @@ const { User } = require("../models/user");
 const CustomResponse = require("../models/customResponse");
 const CustomConfig = require("../models/customConfig");
 const express = require("express");
+const mongoose = require('mongoose');
 const router = express.Router();
 
 router.get("/client", [auth, client], async (req, res) => {
@@ -107,6 +108,51 @@ router.get("/atelier", [auth, atelier], async (req, res) => {
 
   const customResponse = new CustomResponse(200, '', voitures);
   res.send(customResponse);
+});
+
+router.post("/client/recuperer/:numero", [auth, client], async (req, res) => {
+  let customResponse = {};
+
+  let voiture = await Voiture.findOne({numero: req.params.numero, user: req.user._id});
+  if (!voiture) {
+    customResponse = new CustomResponse(404, 'Voiture non trouver');
+    return res.send(customResponse);
+  }
+  if (voiture.etat == CustomConfig.VOITURE_ETAT_SORTIE) {
+    customResponse = new CustomResponse(400, 'Demande non valide');
+    return res.send(customResponse);
+  }
+  if (voiture.etat == CustomConfig.VOITURE_ETAT_SORTIE) {
+    customResponse = new CustomResponse(400, 'Demande non valide');
+    return res.send(customResponse);
+  }
+  if (!await voiture.isVisiteFinished()) {
+    customResponse = new CustomResponse(400, 'Des reparations sont encore encours ou/et facture non paye');
+    return res.send(customResponse);
+  }
+
+  voiture.etat = CustomConfig.VOITURE_ETAT_SORTIE;
+  let visite = await voiture.getLastPaidVisite();
+  console.log(visite);
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    if (visite) {
+      visite.date_recup = req.body.date_recup || new Date();
+      await visite.save({ session });
+    }
+    await voiture.save({ session });
+    
+    await session.commitTransaction();
+
+    customResponse = new CustomResponse(200, '', voiture);
+    res.send(customResponse);
+  } catch (err) {
+    await session.abortTransaction();
+    customResponse = new CustomResponse(500, "Something went wrong");
+    res.send(customResponse);
+  }
+  session.endSession();
 });
 
 module.exports = router;

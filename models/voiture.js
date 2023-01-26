@@ -1,7 +1,8 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
-const { visiteSchema } = require("../models/visite");
+const { visiteSchema, Visite } = require("../models/visite");
+const CustomConfig = require("./customConfig");
 
 const voitureSchema = new mongoose.Schema({
   user: {
@@ -57,6 +58,29 @@ voitureSchema.methods.setModele = function(modele) {
 
 voitureSchema.methods.resetDateDepot = function() {
   this.date_depot = new Date();
+}
+
+voitureSchema.methods.isVisiteFinished = async function() {
+  const visite = await Visite.findOne()
+    .and([{ voiture: this._id }, { etat: { $ne: CustomConfig.VISITE_PAYE} }]);
+
+  return visite ? false : true;
+}
+
+voitureSchema.methods.getLastUnpaidVisite = async function() {
+  const visite = await Visite.findOne()
+    .and([{ voiture: this._id }, { etat: { $ne: CustomConfig.VISITE_PAYE} }])
+    .sort({date_debut: -1});
+
+  return visite;
+}
+
+voitureSchema.methods.getLastPaidVisite = async function() {
+  const visite = await Visite.findOne()
+    .and([{ voiture: this._id }, { etat: { $eq: CustomConfig.VISITE_PAYE} }])
+    .sort({date_debut: -1});
+
+  return visite;
 }
 
 const Voiture = mongoose.model("Voiture", voitureSchema);
