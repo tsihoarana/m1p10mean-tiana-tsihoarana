@@ -17,6 +17,21 @@ const depenseSchema = new mongoose.Schema({
   },
 });
 
+depenseSchema.methods.setType = function(type) {
+    if (type)
+        this.type = type;
+}
+
+depenseSchema.methods.setPrix = function(prix) {
+    if (prix)
+        this.prix = prix;
+}
+
+depenseSchema.methods.setDate = function(date) {
+    if (date)
+        this.date = date;
+}
+
 const Depense = mongoose.model("Depense", depenseSchema);
 
 function validateDepense(depense) {
