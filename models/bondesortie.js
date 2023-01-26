@@ -40,6 +40,20 @@ bondesortieSchema.statics.chiffreAffaire = async function (date_start, date_end)
   return bondesorties.reduce((acc, bondesortie) => acc + bondesortie.prix, 0);
 }
 
+bondesortieSchema.statics.chiffreAffaireDuMois = async function (year, month) {
+  const start = new Date(year, month, 1);
+	const end = new Date(year, month + 1, 0);
+  const query = [
+    { date_paye: {$gte: start, $lte: end} },
+    { etat: CustomConfig.BON_DE_SORTIE_PAYE }
+  ];
+  const bondesorties = await this
+    .find()
+    .and(query);
+  
+  return bondesorties.reduce((acc, bondesortie) => acc + bondesortie.prix, 0);
+}
+
 const Bondesortie = mongoose.model("Bondesortie", bondesortieSchema);
 
 function validateBondesortie(bondesortie) {
