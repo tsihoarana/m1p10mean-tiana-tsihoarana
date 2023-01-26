@@ -66,4 +66,11 @@ router.delete("/atelier/:id", [auth, financier, validateObjectId], async (req, r
     return res.send(customResponse);
 });
 
+router.get("/atelier", [auth, financier], async (req, res) => {
+    let depenses = await Depense.find({});
+
+    const customResponse = new CustomResponse(200, '', depenses);
+    return res.send(customResponse);
+});
+
 module.exports = router;
