@@ -37,6 +37,20 @@ visiteSchema.methods.sommeReparation = function () {
     return this.reparations.reduce((acc, reparation) => acc + reparation.prix, 0);
 };
 
+visiteSchema.methods.sommeDureeReparation = function () {
+    return this.reparations.reduce((acc, reparation) => acc + reparation.duree, 0);
+};
+
+visiteSchema.statics.reparationMoyenne = async function () {
+    const visites = await this.find({});
+    let sum = 0;
+    visites.forEach((visite) => {
+        sum += visite.sommeDureeReparation();
+    }, sum);
+
+    return sum / visites.length;
+};
+
 visiteSchema.methods.isAllReparationFinished = function () {
     this.finished = true;
     this.reparations.every((reparation) => {

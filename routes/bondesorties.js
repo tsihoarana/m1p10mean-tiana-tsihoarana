@@ -106,5 +106,6 @@ router.get("/client", [auth, client], async (req, res) => {
 
     const customResponse = new CustomResponse(200, '', bondesortie);
     res.send(customResponse);
-}); 
+});
+
 module.exports = router;

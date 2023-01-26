@@ -18,4 +18,12 @@ router.get("/financier/chiffre_affaire", [auth, financier], async (req, res) => 
     res.send(customResponse);
 });
 
+router.get("/financier/reparation_moyenne", [auth, financier], async (req, res) => {
+    let reparation_moyenne = await Visite.reparationMoyenne();
+    reparation_moyenne = { reparation_moyenne };
+    
+    const customResponse = new CustomResponse(200, '', reparation_moyenne);
+    res.send(customResponse);
+});
+
 module.exports = router;
