@@ -45,4 +45,11 @@ router.get("/financier/benefice/mois", [auth, financier], async (req, res) => {
     res.send(customResponse);
 });
 
+router.get("/financier/chiffre_affaire/data/:mois", [auth, financier], async (req, res) => {
+    let datas = await Bondesortie.chartData(req.params.mois);
+
+    const customResponse = new CustomResponse(200, '', datas);
+    res.send(customResponse);
+});
+
 module.exports = router;

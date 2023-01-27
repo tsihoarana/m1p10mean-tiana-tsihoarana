@@ -54,6 +54,19 @@ bondesortieSchema.statics.chiffreAffaireDuMois = async function (year, month) {
   return bondesorties.reduce((acc, bondesortie) => acc + bondesortie.prix, 0);
 }
 
+bondesortieSchema.statics.chartData = async function (year) {
+  const months = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 
+    'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'];
+  let result = [];
+
+  for (const [i, month] of months.entries()) {
+    let value = await Bondesortie.chiffreAffaireDuMois(year, i);
+    result.push({ mois: month, chiffre_affaire: value });
+  }
+
+  return result;
+}
+
 const Bondesortie = mongoose.model("Bondesortie", bondesortieSchema);
 
 function validateBondesortie(bondesortie) {
