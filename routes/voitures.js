@@ -185,7 +185,7 @@ router.get("/atelier/:numero", [auth, atelier], async (req, res) => {
   res.send(customResponse);
 });
 
-router.get("/atelier/:id", [auth, atelier, validateObjectId], async (req, res) => {
+router.get("/atelier/id/:id", [auth, atelier, validateObjectId], async (req, res) => {
   let customResponse = {};
 
   const voiture = await Voiture.findById( req.params.id );

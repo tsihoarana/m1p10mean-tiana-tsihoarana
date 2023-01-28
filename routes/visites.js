@@ -130,13 +130,13 @@ router.post("/atelier/terminer/:id", [auth, atelier, validateObjectId], async (r
 router.get("/atelier/:id", [auth, atelier, validateObjectId], async (req, res) => {
   let customResponse = {};
 
-  const visites = await Visite.findById( req.params.id );
+  const visite = await Visite.findById( req.params.id );
   if (!visite) {
     customResponse = new CustomResponse(404, 'visite non trouver');
     return res.send(customResponse);
   }
 
-  customResponse = new CustomResponse(200, '', visites);
+  customResponse = new CustomResponse(200, '', visite);
   res.send(customResponse);
 });
 
