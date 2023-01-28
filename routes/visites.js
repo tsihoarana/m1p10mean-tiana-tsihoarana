@@ -57,6 +57,10 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
     customResponse = new CustomResponse(400, 'voiture non valide');
     return res.send(customResponse);
   }
+  if (!voiture.isVisiteFinished()) {
+    customResponse = new CustomResponse(400, 'une visite encore non terminer');
+    return res.send(customResponse);
+  }
 
   req.body.user = voiture.user;
   req.body.voiture = voiture._id;
