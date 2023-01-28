@@ -68,8 +68,7 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
 });
 
 router.get("/atelier/voiture/:numero", [auth, atelier], async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
-  req.body.user = user;
+  let customResponse = {};
 
   const voiture = await Voiture.findOne({ numero: req.params.numero });
   if (!voiture) {
@@ -77,11 +76,9 @@ router.get("/atelier/voiture/:numero", [auth, atelier], async (req, res) => {
     return res.send(customResponse);
   }
 
-  const visites = await Visite
-    .find({ voiture: voiture._id })
-    .sort({ date_debut: -1 });
+  const visites = await Visite.find({ voiture: voiture._id });
 
-  const customResponse = new CustomResponse(200, '', visites);
+  customResponse = new CustomResponse(200, '', visites);
   res.send(customResponse);
 });
 
