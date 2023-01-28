@@ -9,6 +9,7 @@ const CustomResponse = require("../models/customResponse");
 const CustomConfig = require("../models/customConfig");
 const express = require("express");
 const validateObjectId = require("../middleware/validateObjectId");
+const { and } = require("joi/lib/types/object");
 const router = express.Router();
 
 router.get("/client/encours", [auth, client], async (req, res) => {
@@ -133,6 +134,19 @@ router.get("/atelier/:id", [auth, atelier, validateObjectId], async (req, res) =
   let customResponse = {};
 
   const visite = await Visite.findById( req.params.id );
+  if (!visite) {
+    customResponse = new CustomResponse(404, 'visite non trouver');
+    return res.send(customResponse);
+  }
+
+  customResponse = new CustomResponse(200, '', visite);
+  res.send(customResponse);
+});
+
+router.get("/client/id/:id", [auth, client, validateObjectId], async (req, res) => {
+  let customResponse = {};
+
+  const visite = await Visite.find({ _id: req.params.id, user: req.user._id });
   if (!visite) {
     customResponse = new CustomResponse(404, 'visite non trouver');
     return res.send(customResponse);
