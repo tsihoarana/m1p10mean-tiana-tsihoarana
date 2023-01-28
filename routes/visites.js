@@ -36,7 +36,9 @@ router.get("/client/voiture/:numero", [auth, client], async (req, res) => {
     customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero demandé');
     return res.send(customResponse);
   }
-  const visites = await Visite.find({ user: user._id, voiture: voiture._id });
+  const visites = await Visite
+    .find({ user: user._id, voiture: voiture._id })
+    .sort({ date_debut: -1 });;
 
   customResponse = new CustomResponse(200, '', visites);
   res.send(customResponse);
