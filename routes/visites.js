@@ -9,6 +9,7 @@ const CustomResponse = require("../models/customResponse");
 const CustomConfig = require("../models/customConfig");
 const express = require("express");
 const validateObjectId = require("../middleware/validateObjectId");
+const { and } = require("joi/lib/types/object");
 const router = express.Router();
 
 router.get("/client/encours", [auth, client], async (req, res) => {
@@ -36,7 +37,9 @@ router.get("/client/voiture/:numero", [auth, client], async (req, res) => {
     customResponse = new CustomResponse(404, 'voiture non trouver, verifier le numero demandé');
     return res.send(customResponse);
   }
-  const visites = await Visite.find({ user: user._id, voiture: voiture._id });
+  const visites = await Visite
+    .find({ user: user._id, voiture: voiture._id })
+    .sort({ date_debut: -1 });;
 
   customResponse = new CustomResponse(200, '', visites);
   res.send(customResponse);
@@ -52,6 +55,10 @@ router.post("/atelier/voiture/:numero/create", [auth, atelier], async (req, res)
   }
   if (voiture.etat != CustomConfig.VOITURE_ETAT_ACCEPTER) {
     customResponse = new CustomResponse(400, 'voiture non valide');
+    return res.send(customResponse);
+  }
+  if (!voiture.isVisiteFinished()) {
+    customResponse = new CustomResponse(400, 'une visite encore non terminer');
     return res.send(customResponse);
   }
 
@@ -125,6 +132,32 @@ router.post("/atelier/terminer/:id", [auth, atelier, validateObjectId], async (r
 
   customResponse = new CustomResponse(200, '', visite);
   return res.send(customResponse);
+});
+
+router.get("/atelier/:id", [auth, atelier, validateObjectId], async (req, res) => {
+  let customResponse = {};
+
+  const visite = await Visite.findById( req.params.id );
+  if (!visite) {
+    customResponse = new CustomResponse(404, 'visite non trouver');
+    return res.send(customResponse);
+  }
+
+  customResponse = new CustomResponse(200, '', visite);
+  res.send(customResponse);
+});
+
+router.get("/client/id/:id", [auth, client, validateObjectId], async (req, res) => {
+  let customResponse = {};
+
+  const visite = await Visite.findOne({ _id: req.params.id, user: req.user._id });
+  if (!visite) {
+    customResponse = new CustomResponse(404, 'visite non trouver');
+    return res.send(customResponse);
+  }
+
+  customResponse = new CustomResponse(200, '', visite);
+  res.send(customResponse);
 });
 
 module.exports = router;

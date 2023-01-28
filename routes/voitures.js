@@ -185,4 +185,30 @@ router.get("/atelier/:numero", [auth, atelier], async (req, res) => {
   res.send(customResponse);
 });
 
+router.get("/atelier/id/:id", [auth, atelier, validateObjectId], async (req, res) => {
+  let customResponse = {};
+
+  const voiture = await Voiture.findById( req.params.id );
+  if (!voiture) {
+    customResponse = new CustomResponse(404, 'Voiture non trouver');
+    return res.send(customResponse);
+  }
+
+  customResponse = new CustomResponse(200, '', voiture);
+  res.send(customResponse);
+});
+
+router.get("/client/id/:id", [auth, client, validateObjectId], async (req, res) => {
+  let customResponse = {};
+
+  const voiture = await Voiture.findOne({ _id: req.params.id, user: req.user._id });
+  if (!voiture) {
+    customResponse = new CustomResponse(404, 'Voiture non trouver');
+    return res.send(customResponse);
+  }
+
+  customResponse = new CustomResponse(200, '', voiture);
+  res.send(customResponse);
+});
+
 module.exports = router;
