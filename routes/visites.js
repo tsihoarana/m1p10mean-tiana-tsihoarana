@@ -127,4 +127,17 @@ router.post("/atelier/terminer/:id", [auth, atelier, validateObjectId], async (r
   return res.send(customResponse);
 });
 
+router.get("/atelier/:id", [auth, atelier, validateObjectId], async (req, res) => {
+  let customResponse = {};
+
+  const visites = await Visite.findById( req.params.id );
+  if (!visite) {
+    customResponse = new CustomResponse(404, 'visite non trouver');
+    return res.send(customResponse);
+  }
+
+  customResponse = new CustomResponse(200, '', visites);
+  res.send(customResponse);
+});
+
 module.exports = router;
