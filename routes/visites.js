@@ -146,7 +146,7 @@ router.get("/atelier/:id", [auth, atelier, validateObjectId], async (req, res) =
 router.get("/client/id/:id", [auth, client, validateObjectId], async (req, res) => {
   let customResponse = {};
 
-  const visite = await Visite.find({ _id: req.params.id, user: req.user._id });
+  const visite = await Visite.findOne({ _id: req.params.id, user: req.user._id });
   if (!visite) {
     customResponse = new CustomResponse(404, 'visite non trouver');
     return res.send(customResponse);
