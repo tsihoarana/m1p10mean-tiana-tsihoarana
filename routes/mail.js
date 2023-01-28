@@ -7,7 +7,7 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/financier/send", [auth, financier], async (req, res) => {
-    await sendMail(req.body.email, req.body.ref);
+    await sendMail(req.body.email, req.body.name, req.body.ref);
   
     const customResponse = new CustomResponse(200, 'mail envoyé');
     res.send(customResponse);

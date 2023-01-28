@@ -158,7 +158,7 @@ table.body .article {
 </html>
 `;
 
-exports.sendMail = async function (email, ref) {
+exports.sendMail = async function (email, name, ref) {
     const email_user = config.get("email_user");
     const email_pass = config.get("email_pass");
     const site = config.get("site");
@@ -175,7 +175,7 @@ exports.sendMail = async function (email, ref) {
 
     const template = handlebars.compile(MAIL_MODEL);
     const replacements = {
-        name: "you",
+        name,
         reference: ref,
         site: site,
         image: logo_url
