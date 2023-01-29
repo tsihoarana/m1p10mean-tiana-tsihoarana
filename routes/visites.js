@@ -1,6 +1,7 @@
 const auth = require("../middleware/auth");
 const client = require("../middleware/client");
 const atelier = require("../middleware/atelier");
+const financier = require("../middleware/financier");
 const _ = require("lodash");
 const { Visite } = require("../models/visite");
 const { User } = require("../models/user");
@@ -135,6 +136,19 @@ router.post("/atelier/terminer/:id", [auth, atelier, validateObjectId], async (r
 });
 
 router.get("/atelier/:id", [auth, atelier, validateObjectId], async (req, res) => {
+  let customResponse = {};
+
+  const visite = await Visite.findById( req.params.id );
+  if (!visite) {
+    customResponse = new CustomResponse(404, 'visite non trouver');
+    return res.send(customResponse);
+  }
+
+  customResponse = new CustomResponse(200, '', visite);
+  res.send(customResponse);
+});
+
+router.get("/financier/:id", [auth, financier, validateObjectId], async (req, res) => {
   let customResponse = {};
 
   const visite = await Visite.findById( req.params.id );
