@@ -2,6 +2,8 @@ const config = require("config");
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const { reparationSchema } = require("../models/reparation");
+const CustomConfig = require("./customConfig");
+
 
 const visiteSchema = new mongoose.Schema({
     user: {
@@ -54,7 +56,7 @@ visiteSchema.statics.reparationMoyenne = async function () {
 visiteSchema.methods.isAllReparationFinished = function () {
     this.finished = true;
     this.reparations.every((reparation) => {
-        if (reparation.avancement != 2) {
+        if (reparation.avancement != CustomConfig.REPARATION_TERMINER) {
             this.finished = false;
             return false;
         }

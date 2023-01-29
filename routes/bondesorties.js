@@ -123,6 +123,19 @@ router.get("/financier", [auth, financier], async (req, res) => {
     res.send(customResponse);
 });
 
+router.get("/financier/:id", [auth, financier, validateObjectId], async (req, res) => {
+    let customResponse = {};
+
+    const bondesortie = await Bondesortie.findById(req.params.id);
+    if (!bondesortie) {
+        customResponse = new CustomResponse(404, "bon de sortie non trouver");
+        return res.send(customResponse);
+    }
+
+    customResponse = new CustomResponse(200, '', bondesortie);
+    res.send(customResponse);
+});
+
 router.get("/atelier", [auth, atelier], async (req, res) => {
     const etat_query = req.query.etat ? { etat: req.query.etat } : {};
     const bondesortie = await Bondesortie
