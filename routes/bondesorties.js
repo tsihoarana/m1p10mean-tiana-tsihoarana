@@ -35,6 +35,12 @@ router.post("/atelier/visite/:id/create", [auth, atelier, validateObjectId], asy
         return res.send(customResponse);
     }
 
+    const unique_bon = await Bondesortie.findOne({ visite: visite._id });
+    if (unique_bon) {
+        customResponse = new CustomResponse(400, "Bon de sortie deja existant");
+        return res.send(customResponse);
+    }
+
     const bondesortie = new Bondesortie({
         visite: req.params.id,
         prix: visite.sommeReparation(),

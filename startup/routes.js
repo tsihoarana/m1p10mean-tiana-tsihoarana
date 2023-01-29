@@ -7,6 +7,7 @@ const reparations = require('../routes/reparations');
 const bondesorties = require('../routes/bondesorties');
 const statistiques = require('../routes/statistiques');
 const depenses = require('../routes/depenses');
+const mail = require('../routes/mail');
 const error = require('../middleware/error');
 
 module.exports = function(app) {
@@ -19,5 +20,6 @@ module.exports = function(app) {
   app.use('/api/bondesorties', bondesorties);
   app.use('/api/statistiques', statistiques);
   app.use('/api/depenses', depenses);
+  app.use('/api/mail', mail);
   app.use(error);
 }

@@ -1,4 +1,8 @@
 {
   "jwtPrivateKey": "garage_jwtPrivateKey",
-  "db": "garage_db"
+  "db": "garage_db",
+  "email_user": "garage_email_user",
+  "email_pass": "garage_email_pass",
+  "site": "garage_site",
+  "logo_url": "garage_logo_url" 
 }
