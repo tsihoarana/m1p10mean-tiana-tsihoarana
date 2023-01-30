@@ -122,6 +122,10 @@ router.post("/atelier/terminer/:id", [auth, atelier, validateObjectId], async (r
     customResponse = new CustomResponse(400, "Reparation du visite non terminé");
     return res.send(customResponse);
   }
+  if (!visite.reparations.length) {
+    customResponse = new CustomResponse(400, "Reparation du visite vide");
+    return res.send(customResponse);
+  }
   if (visite.etat != CustomConfig.VISITE_ENCOURS) {
     customResponse = new CustomResponse(400, "visite non valide");
     return res.send(customResponse);
