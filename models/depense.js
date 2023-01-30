@@ -33,6 +33,8 @@ depenseSchema.methods.setDate = function(date) {
 }
 
 depenseSchema.statics.duMois = async function(year, month) {
+    year = parseInt(year);
+    month = parseInt(month);
     const start = new Date(year, month, 1);
 	const end = new Date(year, month + 1, 0);
     const query = { date: {$gte: start, $lte: end} };

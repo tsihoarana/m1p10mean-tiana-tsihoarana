@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const { and } = require("joi/lib/types/object");
 const mongoose = require("mongoose");
 const CustomConfig = require("./customConfig");
 
@@ -41,6 +40,8 @@ bondesortieSchema.statics.chiffreAffaire = async function (date_start, date_end)
 }
 
 bondesortieSchema.statics.chiffreAffaireDuMois = async function (year, month) {
+  year = parseInt(year);
+  month = parseInt(month);
   const start = new Date(year, month, 1);
 	const end = new Date(year, month + 1, 0);
   const query = [
